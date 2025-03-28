@@ -22,7 +22,7 @@
 
 To run the script, execute:  
 ```bash
-sudo python watcher.py
+sudo python3 watcher.py
 ```
 It must be run with **root privileges** to monitor system directories effectively.  
 
