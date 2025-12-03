@@ -1,5 +1,5 @@
-# **Watcher – Real-Time Linux Security File Monitor (Updated)**
-
+# **Watcher – Real-Time Linux Security File Monitor (Updated 12/25)**
+/
 **Watcher** is a lightweight, high-signal security monitoring tool designed to detect suspicious or unauthorized activity on Linux systems.  
 It provides **real-time alerts**, **process attribution**, and **forensic-quality metadata**, while avoiding the noise and overhead of full filesystem monitoring.
 
@@ -86,4 +86,4 @@ Watcher includes multiple noise-reduction features:
 ### **Logging**
 
 Watcher outputs to console and rotates log files in:
-
+/root/logs/security-monitor
