@@ -33,12 +33,12 @@ This dramatically reduces noise while still catching attacks, persistence mechan
 
 Watcher detects:
 
-- **IN_MODIFY** — file content changes  
-- **IN_CLOSE_WRITE** — editors finishing writes  
-- **IN_ATTRIB** — permission changes, ownership changes, timestamp tampering  
-- **IN_DELETE / IN_MOVED_FROM / IN_MOVED_TO** — deletions & moves  
-- **IN_CREATE** — creation of suspicious files  
-- **IN_OPEN** — *reads or file opens* (sensitive directories only)
+- **IN_MODIFY** file content changes  
+- **IN_CLOSE_WRITE** editors finishing writes  
+- **IN_ATTRIB** permission changes, ownership changes, timestamp tampering  
+- **IN_DELETE / IN_MOVED_FROM / IN_MOVED_TO** deletions & moves  
+- **IN_CREATE** creation of suspicious files  
+- **IN_OPEN** *reads or file opens* (sensitive directories only)
 
 Even a simple `cat file` or attempted copy is logged.
 
