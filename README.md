@@ -1,89 +1,133 @@
-# **Watcher – Real-Time Linux Security File Monitor (Updated 12/25)**
-/
-**Watcher** is a lightweight, high-signal security monitoring tool designed to detect suspicious or unauthorized activity on Linux systems.  
-It provides **real-time alerts**, **process attribution**, and **forensic-quality metadata**, while avoiding the noise and overhead of full filesystem monitoring.
+# Watcher
 
-Watcher focuses strictly on **security-relevant files** and **intrusion indicators**, making it suitable for system administrators, security teams, and hardened administrative environments.
+## High-Signal Linux File Monitoring for Security-Sensitive Systems
 
----
+Watcher is a lightweight Linux file monitoring tool designed for administrators who need **actionable security visibility without filesystem noise**.
 
-## **Features**
+Most file integrity and monitoring tools either generate excessive events, require heavy agents, or lack meaningful attribution. Watcher focuses only on **security-relevant files and behaviors**, capturing *who changed what, how, and from where* — in real time — using native Linux mechanisms.
 
-### **Selective High-Security Monitoring**
-
-Watcher monitors only directories and files that matter for system integrity and compromise detection:
-
-- Core system configuration directories:  
-  - `/etc`  
-  - `/usr`  
-  - `/var`  
-  - `/root`
-- Per-user sensitive items:
-  - Shell rc files (`.bashrc`, `.bash_profile`, `.profile`, `.zshrc`, `.zprofile`)
-  - `~/.ssh/` (keys, configs, authorized_keys, known_hosts)
-  - `~/.gnupg/`
-  - `~/.config/systemd/`
-  - `~/bin/`
-
-This dramatically reduces noise while still catching attacks, persistence mechanisms, and unauthorized access.
+This project is intended for environments where **clarity and forensic signal matter more than volume**.
 
 ---
 
-### **Event Types Captured**
+## What Watcher Is Good For
 
-Watcher detects:
+Typical use cases include:
 
-- **IN_MODIFY** file content changes  
-- **IN_CLOSE_WRITE** editors finishing writes  
-- **IN_ATTRIB** permission changes, ownership changes, timestamp tampering  
-- **IN_DELETE / IN_MOVED_FROM / IN_MOVED_TO** deletions & moves  
-- **IN_CREATE** creation of suspicious files  
-- **IN_OPEN** *reads or file opens* (sensitive directories only)
+- Detecting unauthorized changes to system configuration
+- Identifying persistence mechanisms after compromise
+- Monitoring privileged file access on hardened servers
+- Reconstructing activity during security incidents
+- Lightweight monitoring where full FIM / EDR tools are impractical
 
-Even a simple `cat file` or attempted copy is logged.
-
----
-
-### **User & Process Attribution**
-
-Each alert captures:
-
-- Username  
-- UID  
-- Local vs remote login  
-- SSH session details (if applicable)  
-- Process name  
-- Process path  
-- PID / PPID  
-- Full command line  
-- File size  
-- File creation & modification timestamps
-
-This provides strong forensic signal: *who did what, when, how, and using what program*.
+Watcher is especially useful on servers, lab systems, and administrative machines where you want visibility without deploying complex infrastructure.
 
 ---
 
-### **Intelligent Filtering & Signal Controls**
+## High-Signal Monitoring (Not Full Filesystem Scanning)
 
-Watcher includes multiple noise-reduction features:
+Watcher intentionally monitors **only paths that indicate compromise or persistence**, dramatically reducing noise while still catching meaningful activity.
 
-- Filters out harmless high-traffic locations (browser caches, temp files, etc.)
-- Suppresses editor swap/temporary files
-- Debounce logic to avoid repeated triggers during fast edits
-- Automatic log rotation to prevent disk bloat
-- Severity classification (HIGH / MEDIUM / LOW)
+Monitored locations include:
+
+**Core system areas:**
+- `/etc`
+- `/usr`
+- `/var`
+- `/root`
+
+**User-level sensitive files:**
+- Shell startup files (`.bashrc`, `.bash_profile`, `.profile`, `.zshrc`, `.zprofile`)
+- `~/.ssh/` (keys, configs, authorized_keys, known_hosts)
+- `~/.gnupg/`
+- `~/.config/systemd/`
+- `~/bin/`
+
+These locations are common targets for backdoors, privilege escalation, and persistence.
 
 ---
 
-### **Severity Levels**
+## Events Captured
 
-- **HIGH** – modification, deletion, or permission changes to security-sensitive files  
-- **MEDIUM** – new files or suspicious activity inside protected directories  
-- **LOW** – read/open access to sensitive files
+Watcher tracks security-relevant filesystem activity, including:
+
+- File content changes (`IN_MODIFY`, `IN_CLOSE_WRITE`)
+- Permission, ownership, or timestamp changes (`IN_ATTRIB`)
+- File creation, deletion, and moves
+- Read or open access to sensitive files
+
+Even simple actions like `cat` or attempted copies inside protected paths are visible.
 
 ---
 
-### **Logging**
+## Forensic-Quality Attribution
 
-Watcher outputs to console and rotates log files in:
+Each event includes enough context to answer **who acted, how they acted, and from where**, without correlating multiple log sources.
+
+Captured metadata includes:
+
+- Username and UID
+- Local vs remote session
+- SSH session details (when applicable)
+- Process name and executable path
+- PID / PPID
+- Full command line
+- File size
+- Creation and modification timestamps
+
+This allows rapid reconstruction of activity during incident response.
+
+---
+
+## Intelligent Noise Reduction
+
+Watcher is designed to remain usable on real systems:
+
+- Filters high-traffic but low-value paths (browser caches, temp files)
+- Suppresses editor swap and temporary files
+- Debounce logic to avoid repeated triggers during rapid edits
+- Automatic log rotation to prevent disk growth
+- Severity classification for prioritization
+
+### Severity Levels
+
+- **HIGH** – Modification, deletion, or permission changes to security-sensitive files
+- **MEDIUM** – New or suspicious files inside protected directories
+- **LOW** – Read or open access to sensitive files
+
+---
+
+## Logging
+
+Events are written to console and to rotating log files located at:
+
+```
 /root/logs/security-monitor
+```
+
+Logs are structured for manual review or downstream processing.
+
+---
+
+## Customization & Integration
+
+Watcher is intentionally simple and scriptable:
+
+- Monitored paths can be tailored to specific system roles
+- Severity rules can be adjusted per environment
+- Output can be adapted for alerting, reporting, or SIEM ingestion
+- Designed to be extended rather than replaced
+
+This repository provides a practical foundation that can be adapted to many operational contexts.
+
+---
+
+## About This Project
+
+Watcher is maintained as a focused, transparent Linux security tool rather than a full monitoring platform.
+
+If you need this adapted, extended, or integrated into your environment — including custom rules, reporting, or deployment-specific tuning — I am available for **fixed-scope customization and tooling work**.
+
+---
+
+*Technical documentation and implementation details are intentionally kept separate to preserve clarity and maintainability.*
